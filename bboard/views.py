@@ -48,14 +48,14 @@ def add_post(request):
     return render(request, template_name, context)
 
 
-
-
-
 def delete(request, pk):
     try:
-        person = Bb.objects.get(id=pk)
-        person.delete()
-        return HttpResponseRedirect('/bboard')
+        post = Bb.objects.get(id=pk)
+        if post.user == request.user:
+            post.delete()
+            return HttpResponseRedirect('/bboard')
+        else:
+            return HttpResponseNotFound("<h2>У вас нет прав на удаление</h2>")
     except Bb.DoesNotExist:
         return HttpResponseNotFound("<h2>Person not found</h2>")
 
