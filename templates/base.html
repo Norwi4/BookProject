@@ -8,8 +8,9 @@
 </head>
 <body>
 <div style="float: right">
+    <p>{{ user.username }}</p>
     {% if user.is_authenticated %}
-        <p>{{ user.username }}</p>
+
         <p><a href="{% url 'logout' %}">Выход</a></p>
         <p><a href="/admin">Админка</a> </p>
     {% else %}

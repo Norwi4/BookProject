@@ -1,8 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
+import os
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from .models import Bb, Rubric
 from .forms import BbForm
 
@@ -28,16 +31,6 @@ def my_posts(request):
     context = {'bbs': bbs}
     return render(request, 'bboard/by_rubric.html', context)
 
-'''class BbCreateView(CreateView):
-    template_name = 'bboard/create.html'
-    form_class = BbForm
-    success_url = reverse_lazy('index')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['rubrics'] = Rubric.objects.all()
-        return context'''
-
 
 @login_required
 def add_post(request):
@@ -53,4 +46,32 @@ def add_post(request):
     template_name = 'bboard/create.html'
     context = {'form': form}
     return render(request, template_name, context)
+
+
+def edit(request, pk):
+    try:
+        post = Bb.objects.get(id=pk)
+        if request.method == "POST":
+            post.title = request.POST.get("title")
+            post.content = request.POST.get("content")
+            post.price = request.POST.get("price")
+            post.save()
+            return HttpResponseRedirect('/bboard')
+        else:
+            return render(request, "bboard/edit.html", {"post": post})
+    except Bb.DoesNotExist:
+        return HttpResponseNotFound("<h2>Person not found</h2>")
+
+
+def delete(request, pk):
+    try:
+        person = Bb.objects.get(id=pk)
+        person.delete()
+        return HttpResponseRedirect('/bboard')
+    except Bb.DoesNotExist:
+        return HttpResponseNotFound("<h2>Person not found</h2>")
+
+
+
+
 
