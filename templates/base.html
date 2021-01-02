@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Главная{% endblock %}</title>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+<div style="float: right">
+    {% if user.is_authenticated %}
+        <p>{{ user.username }}</p>
+        <p><a href="{% url 'logout' %}">Выход</a></p>
+        <p><a href="/admin">Админка</a> </p>
+    {% else %}
+        <p>You are not logged in.</p>
+        <a href="{% url 'login' %}">Вход</a>
+        <a href="{% url 'signup' %}">Регистрация</a>
+    {% endif %}
+</div>
+<header>
+    <h1>Обьявления</h1>
+    <nav>
+        <a href="{%  url 'index' %}" style="color: red">Главная</a>
+        {% if user.is_authenticated %}
+            <a href="{%  url 'add' %}" style="color: green">Создать</a>
+        {% endif %}
+        {% for rubric in rubrics %}
+            <a href="{% url 'by_rubric' rubric.pk %}">{{ rubric.name }}</a>
+        {% endfor %}
+
+    </nav>
+    <div class="right-column">
+
+    </div>
+<section>
+            {% block content %}
+            {% endblock %}
+        </section>
+</header>
+
+</body>
+</html>
