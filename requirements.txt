@@ -7,4 +7,3 @@ Pillow==8.0.1
 pytz==2020.5
 sqlparse==0.4.1
 uvicorn==0.13.3
-psycopg2==2.8.6
