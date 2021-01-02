@@ -21,6 +21,13 @@ def by_rubric(request, rubric_id):
     return render(request, 'bboard/by_rubric.html', context)
 
 
+
+@login_required
+def my_posts(request):
+    bbs = Bb.objects.filter(user=request.user)
+    context = {'bbs': bbs}
+    return render(request, 'bboard/by_rubric.html', context)
+
 '''class BbCreateView(CreateView):
     template_name = 'bboard/create.html'
     form_class = BbForm

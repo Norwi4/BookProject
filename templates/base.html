@@ -24,6 +24,7 @@
         <a href="{%  url 'index' %}" style="color: red">Главная</a>
         {% if user.is_authenticated %}
             <a href="{%  url 'add' %}" style="color: green">Создать</a>
+            <a href="{%  url 'my_posts' %}" style="color: green">Мои посты</a>
         {% endif %}
         {% for rubric in rubrics %}
             <a href="{% url 'by_rubric' rubric.pk %}">{{ rubric.name }}</a>
