@@ -69,7 +69,7 @@ def edit(request, pk):
             post.title = request.POST.get("title")
             post.content = request.POST.get("content")
             post.rubric.name = request.POST.get("rubric")
-            
+
             post.save()
             return HttpResponseRedirect("/bboard")
         else:
