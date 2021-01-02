@@ -5,11 +5,13 @@
         <h2>{{ bb.title }}</h2>
         <p> {{ bb.content }}</p>
         <a href="/bboard/{{ rubric.pk }}">{{ rubric.name }}</a>
+        <p> {{ bb.price }} руб.</p>
         <p> {{ bb.published|date:"d.m.Y H:i:s"}}</p>
         <p>{{ bb.user }}</p>
         {% if user.is_authenticated %}
             {% if user == bb.user %}
                 <p><a href="{% url 'delete' bb.pk %}">Удалить</a></p>
+                <p><a href="{% url 'edit' bb.pk %}">Изменить</a></p>
             {% endif %}
         {% endif %}
     </div>

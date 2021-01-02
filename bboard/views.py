@@ -60,6 +60,19 @@ def delete(request, pk):
         return HttpResponseNotFound("<h2>Person not found</h2>")
 
 
+# изменение данных в бд
+def edit(request, pk):
+    try:
+        post = Bb.objects.get(id=pk)
 
-
-
+        if request.method == "POST":
+            post.title = request.POST.get("title")
+            post.content = request.POST.get("content")
+            post.rubric.name = request.POST.get("rubric")
+            
+            post.save()
+            return HttpResponseRedirect("/bboard")
+        else:
+            return render(request, "bboard/edit.html", {"post": post})
+    except Bb.DoesNotExist:
+        return HttpResponseNotFound("<h2>Person not found</h2>")
