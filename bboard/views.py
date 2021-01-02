@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
-from django.views.generic.edit import CreateView
+
 from django.urls import reverse_lazy
 import os
 from django.contrib.auth import get_user_model
@@ -48,19 +48,7 @@ def add_post(request):
     return render(request, template_name, context)
 
 
-def edit(request, pk):
-    try:
-        post = Bb.objects.get(id=pk)
-        if request.method == "POST":
-            post.title = request.POST.get("title")
-            post.content = request.POST.get("content")
-            post.price = request.POST.get("price")
-            post.save()
-            return HttpResponseRedirect('/bboard')
-        else:
-            return render(request, "bboard/edit.html", {"post": post})
-    except Bb.DoesNotExist:
-        return HttpResponseNotFound("<h2>Person not found</h2>")
+
 
 
 def delete(request, pk):
