@@ -1,19 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
-{% for bb in bbs %}
-    <div>
-        <h2>{{ bb.title }}</h2>
-        <p> {{ bb.content }}</p>
-        <a href="/bboard/{{ rubric.pk }}">{{ rubric.name }}</a>
-        <p> {{ bb.price }} руб.</p>
-        <p> {{ bb.published|date:"d.m.Y H:i:s"}}</p>
-        <p>{{ bb.user }}</p>
-        {% if user.is_authenticated %}
-            {% if user == bb.user %}
-                <p><a href="{% url 'delete' bb.pk %}">Удалить</a></p>
-                <p><a href="{% url 'edit' bb.pk %}">Изменить</a></p>
-            {% endif %}
-        {% endif %}
+
+
+
+
+    <div id="catalog">
+        {% for bb in bbs %}
+            <a href="{% url 'detail' bb.pk %}">
+                <div>
+                    <figure>
+                        <div class="item-product">
+                            <p id="item-name">{{ bb.title }}</p>
+                            <p>{{ bb.rubric.name }}</p>
+                            <p> {{ bb.content }}</p>
+                            <a href="/bboard/{{ rubric.pk }}">{{ rubric.name }}</a>
+
+                            <p id="item-price">{{ bb.price }} руб.</p>
+
+
+                            <figcaption>
+                                <p> {{ bb.published|date:"d.m.Y"}}</p>
+                                <p>{{ bb.user }}</p>
+
+                            </figcaption>
+
+                        </div>
+                    </figure>
+                </div>
+            </a>
+        {% endfor %}
     </div>
-{% endfor %}
+
 {% endblock %}

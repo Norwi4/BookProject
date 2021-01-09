@@ -4,7 +4,7 @@ from django.contrib import admin
 
 
 class BbAdmin(admin.ModelAdmin):
-    list_display = ('title', 'content', 'price', 'rubric', 'published',)
+    list_display = ('title', 'content', 'price', 'rubric', 'user', 'published',)
     list_display_links = ("title", 'content')
     search_fields = ('title', 'content',)
 
