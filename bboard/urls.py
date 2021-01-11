@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from .views import index, BbByRubricView, add_post, my_posts, BbDeleteView, BbEditView, BbDetailView
+from .views import index, BbByRubricView, add_post, my_posts, BbDeleteView, BbEditView, BbDetailView, update_profile
 
 
 urlpatterns = [
@@ -25,6 +25,6 @@ urlpatterns = [
     path('delete/<int:pk>/', BbDeleteView.as_view(), name='delete'),
     path('<int:rubric_id>/', BbByRubricView.as_view(), name='by_rubric'),
     path('my_posts/', my_posts, name='my_posts'),
-
+    path('update_profile/', update_profile, name='update_profile'),
     path('', index, name='index')
 ]

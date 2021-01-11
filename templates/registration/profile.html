@@ -1,0 +1,14 @@
+<!-- templates/registration/login.html -->
+{% extends 'base.html' %} &nbsp;
+
+{% block content %}
+    <h2>Profile</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ profile_form.as_p }}
+        <button type="submit">Save changes</button>
+    </form>
+
+{% endblock content %}>

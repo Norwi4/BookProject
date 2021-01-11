@@ -1,17 +1,15 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.db import transaction
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.db.models import Count, Min, Max
-from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.views.generic import DetailView, FormView
+from django.views.generic import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.views.generic.detail import SingleObjectMixin
 
-
-from .models import Bb, Rubric
-from .forms import BbForm
+from .models import Bb, Rubric, Profile
+from .forms import BbForm, UserForm, ProfileForm
 
 
 def index(request):
@@ -56,9 +54,10 @@ class BbDetailView(DetailView):
 @login_required
 def my_posts(request):
     bbs = Bb.objects.filter(user=request.user)
+    profile = Profile.objects.filter(user=request.user)
     count_post_by_rubric = Rubric.objects.annotate(Count('bb'))
     min_price_by_rubric = Rubric.objects.annotate(min=Min('bb__price'))  # минимальная цена
-    context = {'bbs': bbs, 'minpbr': min_price_by_rubric, 'cpbr': count_post_by_rubric}
+    context = {'bbs': bbs, 'minpbr': min_price_by_rubric, 'cpbr': count_post_by_rubric, 'profile': profile}
     return render(request, 'bboard/my_posts.html', context)
 
 
@@ -139,7 +138,6 @@ def edit(request, pk):
         return HttpResponseNotFound("<h2>Person not found</h2>")'''
 
 
-
 class BbEditView(UpdateView):
     model = Bb
     template_name = 'bboard/edit.html'
@@ -150,3 +148,25 @@ class BbEditView(UpdateView):
         context = super().get_context_data(*args, **kwargs)
         context['rubrics'] = Rubric.objects.all()
         return context
+
+
+@login_required
+@transaction.atomic
+def update_profile(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, ('Your profile was successfully updated!'))
+            return redirect('my_posts')
+        else:
+            messages.error(request, ('Please correct the error below.'))
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = ProfileForm(instance=request.user.profile)
+    return render(request, 'registration/profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form
+    })

@@ -35,4 +35,26 @@ class Rubric(models.Model):
         return self.name
 
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, verbose_name="Пользователь")
+    first_name = models.CharField(max_length=20, db_index=True, verbose_name="Имя", null=True)
+    last_name = models.CharField(max_length=20, db_index=True, verbose_name="Фамилия", null=True)
+    email = models.EmailField(db_index=True, verbose_name="Email", null=True)
+    about = models.TextField(db_index=True, null=True, blank=True, verbose_name="О себе")
+
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            Profile.objects.create(user=instance)
+
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.profile.save()
+
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+
+    def __str__(self):
+        return self.first_name
 
