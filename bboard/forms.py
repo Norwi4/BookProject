@@ -9,4 +9,3 @@ class BbForm(ModelForm):
         model = Bb
         fields = ('title', 'content', 'rubric', 'price',)
 
-
