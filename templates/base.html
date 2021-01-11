@@ -56,7 +56,7 @@
     </nav>
     {% if user.is_authenticated %}
         <a class="btn" href="{% url 'logout' %}">Выход</a>
-        <a class="btn btn-outline-primary" href="{%  url 'my_posts' %}">{{ user.username }}</a>
+        <a class="btn btn-outline-primary" href="{% url 'my_posts' %}">{{ user.username }}</a>
     {% else %}
         <a class="btn" href="{% url 'login' %}">Вход</a>
         <a class="btn btn-outline-primary" href="{% url 'signup' %}">Регистрация</a>
@@ -65,34 +65,13 @@
 
 <main>
 
-    <section class="py-5 text-center container">
-
-        {% for rubric in rubrics %}
-            <a href="{% url 'by_rubric' rubric.pk %}">{{ rubric.name }}</a>
-        {% endfor %}
-
-        <p style="color: red">Кол-во записей в каждой рубрике</p>
-        {% for bb in cpbr %}
-            <p>{{ bb.name }}: {{ bb.bb__count }}</p>
-
-        {% endfor %}
-
-        <p style="color: red">Стоймость заказов</p>
-        {% for bb in minpbr %}
-            <p>В {{ bb.name }} от {{ bb.min }} руб.</p>
-        {% endfor %}
-
-    </section>
 
 
     <div class="album py-5 bg-light content">
         <div class="container">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                {% block content %}
-                        {% endblock %}
-            </div>
+            {% block content %}
+            {% endblock %}
         </div>
-
     </div>
 
 </main>
