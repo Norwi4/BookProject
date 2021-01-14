@@ -4,12 +4,13 @@ from django.shortcuts import render, redirect
 from django.db.models import Count, Min, Max
 from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView
+from django.views.generic.base import View
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.views.generic.detail import SingleObjectMixin
 
-from .models import Bb, Rubric, Profile
-from .forms import BbForm, UserForm, ProfileForm
+from .models import Bb, Rubric, Response, Profile
+from .forms import BbForm, UserForm, ProfileForm, ResponseForm
 
 
 def index(request):
@@ -41,46 +42,31 @@ class BbByRubricView(SingleObjectMixin, ListView):
         return self.object.bb_set.all()
 
 
-class BbDetailView(DetailView):
-    model = Bb
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['rubric'] = Rubric.objects.all()
-        return context
-
+def post_detail(request, pk):
+    post = Bb.objects.get(id=pk)
+    comments = Response.objects.filter(post_id=pk)
+    context = {'post': post, 'comments': comments}
+    return render(request, 'bboard/bb_detail.html', context)
 
 
 @login_required
 def my_posts(request):
     bbs = Bb.objects.filter(user=request.user)
-    profile = Profile.objects.filter(user=request.user)
+    profile = Profile.objects.get(user=request.user)
     count_post_by_rubric = Rubric.objects.annotate(Count('bb'))
     min_price_by_rubric = Rubric.objects.annotate(min=Min('bb__price'))  # минимальная цена
     context = {'bbs': bbs, 'minpbr': min_price_by_rubric, 'cpbr': count_post_by_rubric, 'profile': profile}
     return render(request, 'bboard/my_posts.html', context)
 
 
-'''class BbAddView(FormView):
-    template_name = 'bboard/create.html'
-    form_class = BbForm
-    initial = {'price': 0.0}
+def profile_view(request, pk):
+    profile = Profile.objects.get(user_id=pk)
+    my_post = Bb.objects.filter(user_id=pk)
+    context = {'profile': profile, 'my_post': my_post}
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['rubrics'] = Rubric.objects.all()
-        return context
+    return render(request, 'bboard/profile.html', context)
 
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
 
-    def get_form(self, form_class=None):
-        self.object = super().get_form(form_class)
-        return self.object
-
-    def get_success_url(self):
-        return reverse('index')'''
 @login_required
 def add_post(request):
     if request.method == 'POST':
@@ -97,18 +83,6 @@ def add_post(request):
     return render(request, template_name, context)
 
 
-'''def delete(request, pk):
-    try:
-        post = Bb.objects.get(id=pk)
-        if post.user == request.user:
-            post.delete()
-            return HttpResponseRedirect('/bboard')
-        else:
-            return HttpResponseNotFound("<h2>У вас нет прав на удаление</h2>")
-    except Bb.DoesNotExist:
-        return HttpResponseNotFound("<h2>Person not found</h2>")'''
-
-
 class BbDeleteView(DeleteView):
     model = Bb
     template_name = 'bboard/delete.html'
@@ -118,24 +92,6 @@ class BbDeleteView(DeleteView):
         context = super().get_context_data(*args, **kwargs)
         context['rubrics'] = Rubric.objects.all()
         return context
-
-
-'''# изменение данных в бд
-def edit(request, pk):
-    try:
-        post = Bb.objects.get(id=pk)
-
-        if request.method == "POST":
-            post.title = request.POST.get("title")
-            post.content = request.POST.get("content")
-            post.rubric.name = request.POST.get("rubric")
-
-            post.save()
-            return HttpResponseRedirect("/bboard")
-        else:
-            return render(request, "bboard/edit.html", {"post": post})
-    except Bb.DoesNotExist:
-        return HttpResponseNotFound("<h2>Person not found</h2>")'''
 
 
 class BbEditView(UpdateView):
@@ -148,7 +104,6 @@ class BbEditView(UpdateView):
         context = super().get_context_data(*args, **kwargs)
         context['rubrics'] = Rubric.objects.all()
         return context
-
 
 @login_required
 @transaction.atomic
@@ -170,3 +125,16 @@ def update_profile(request):
         'user_form': user_form,
         'profile_form': profile_form
     })
+
+
+class AddResponse(View):
+    """Отзывы"""
+    def post(self, request, pk):
+        form = ResponseForm(request.POST)
+        post = Bb.objects.get(id=pk)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.name = request.user
+            form.post = post
+            form.save()
+        return redirect('index')

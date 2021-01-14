@@ -14,17 +14,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from .views import index, BbByRubricView, add_post, my_posts, BbDeleteView, BbEditView, BbDetailView, update_profile
-
+from .views import index, add_post, my_posts, BbByRubricView, post_detail, BbEditView, BbDeleteView, profile_view, \
+    AddResponse, update_profile
 
 urlpatterns = [
     #path('me/', view_profile, name='me'),
+    path('profile/<int:pk>/', profile_view, name='profile_view'),
     path('add/', add_post, name='add'),
-    path('detail/<int:pk>/', BbDetailView.as_view(), name='detail'),
+    path('detail/<int:pk>/', post_detail, name='detail'),
     path('edit/<int:pk>/', BbEditView.as_view(), name='edit'),
     path('delete/<int:pk>/', BbDeleteView.as_view(), name='delete'),
     path('<int:rubric_id>/', BbByRubricView.as_view(), name='by_rubric'),
-    path('my_posts/', my_posts, name='my_posts'),
+    #path('my_posts/', my_posts, name='my_posts'),
+    path('response/<int:pk>/', AddResponse.as_view(), name='add_response'),
     path('update_profile/', update_profile, name='update_profile'),
     path('', index, name='index')
 ]

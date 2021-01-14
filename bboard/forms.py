@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from .models import Bb, Profile
+from .models import Bb, Profile, Response
 
 
 class BbForm(ModelForm):
@@ -14,10 +14,17 @@ class BbForm(ModelForm):
 class UserForm(ModelForm):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email')
+        fields = ('first_name', 'last_name')
 
 
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        fields = ('first_name', 'last_name', 'email', 'about')
+        fields = ('first_name', 'last_name', 'about', )
+
+
+class ResponseForm(ModelForm):
+    """Форма отзывов"""
+    class Meta:
+        model = Response
+        fields = ('text', )

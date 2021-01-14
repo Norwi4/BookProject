@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Пользователь: {{ profile.user }}</h2>
+    {% if user == profile.user %}
+        {% if profile.first_name  %}
+            <p>Личные данные</p>
+            <p>Имя: {{ profile.first_name }}</p>
+            <p>Фамилия: {{ profile.last_name }}</p>
+            <p>О себе: {{ profile.about }}</p>
+            <a class="btn btn-outline-primary" href="{% url 'update_profile' %}">Изменить</a>
+        {% else %}
+            <a class="btn btn-outline-primary" href="{% url 'update_profile' %}">Заполнить профиль</a>
+        {% endif %}
+    {% else %}
+        <p>Личные данные</p>
+        <p>Имя: {{ profile.first_name }}</p>
+        <p>Фамилия: {{ profile.last_name }}</p>
+        <p>О себе: {{ profile.about }}</p>
+    {% endif %}
+
+
+
+    {% if my_post %}
+        {% if user == profile.user %}
+            <p>Ваши обьявления</p>
+        {% else %}
+            <p>Обьявления</p>
+        {% endif %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
+            {% for post in my_post %}
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
+                             xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
+                             preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                            <rect width="100%" height="100%" fill="#55595c"></rect>
+                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{ post.title }}</text>
+                        </svg>
+
+                        <div class="card-body">
+                            <p class="card-text">{{ post.rubric.name }}</p>
+                            <p class="card-text">{{ post.user }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'detail' post.pk %}">Просмотр</a>
+                                    {% if user == post.user %}
+                                        <a class="btn btn-sm btn-outline-secondary"
+                                           href="{% url 'edit' post.pk %}">Изменить</a>
+                                    {% endif %}
+                                    <!--<button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>-->
+                                </div>
+                                <small class="text-muted">{{ post.published|date:"H : i" }}
+                                    <br>{{ post.published|date:"d.m.Y" }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Обьявлений нет</p>
+        {% if user == profile.user %}
+            <a class="p-2 text-dark" href="{% url 'add' %}">Создать первое обьявление</a>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}
