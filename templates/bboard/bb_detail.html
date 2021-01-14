@@ -33,7 +33,7 @@
 
     <div class="contact-single">
         <h3 class="editContent" style="outline: none; cursor: inherit;">Оставить отзыв</h3>
-        <form action="{% url 'add_response' post.id %}" method="post" class="mt-4">
+        <form action="{% url 'add_response' post.pk %}" method="post" class="mt-4">
             {% csrf_token %}
             <div class="form-group editContent">
                 <label for="contactcomment" class="editContent">

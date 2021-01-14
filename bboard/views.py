@@ -105,6 +105,7 @@ class BbEditView(UpdateView):
         context['rubrics'] = Rubric.objects.all()
         return context
 
+
 @login_required
 @transaction.atomic
 def update_profile(request):

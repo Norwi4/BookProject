@@ -25,5 +25,6 @@ class ResponseAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Rubric)
+#admin.site.register(Bb)
 admin.site.register(Profile)
 

@@ -10,7 +10,6 @@ class BbForm(ModelForm):
         model = Bb
         fields = ('title', 'content', 'rubric', 'price',)
 
-
 class UserForm(ModelForm):
     class Meta:
         model = User
