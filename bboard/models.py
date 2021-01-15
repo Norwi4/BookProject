@@ -56,19 +56,20 @@ class Profile(models.Model):
         verbose_name_plural = "Пользователи"
 
     def __str__(self):
-        return self.first_name
+        return str(self.user)
 
 
 class Response(models.Model):
-    """Отзывы"""
-    name = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    """Отклики"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Пользователь")
     text = models.TextField(verbose_name="Сообщение", max_length=5000)
-    post = models.ForeignKey(Bb, verbose_name="Пост", on_delete=models.CASCADE)
+    post = models.ForeignKey(Bb, verbose_name="Пост", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.name} - {self.post}"
+        return f"{self.user} - {self.post}"
 
     class Meta:
-        verbose_name = "Отзыв"
-        verbose_name_plural = "Отзывы"
+        verbose_name = "Отклик"
+        verbose_name_plural = "Отклики"
+
 

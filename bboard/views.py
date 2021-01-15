@@ -9,8 +9,11 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.views.generic.detail import SingleObjectMixin
 
-from .models import Bb, Rubric, Response, Profile
-from .forms import BbForm, UserForm, ProfileForm, ResponseForm
+from .forms import UserForm, ProfileForm, BbForm, ResponseForm
+from .models import Bb, Rubric, Profile, Response
+
+
+#from .forms import BbForm, UserForm, ProfileForm, ResponseForm
 
 
 def index(request):
@@ -21,7 +24,6 @@ def index(request):
     max_price_by_rubric = Rubric.objects.annotate(max=Max('bb__price')) #максимальная цена
     return render(request, 'bboard/index.html', {'bbs': bbs, 'rubrics': rubrics, 'cpbr': count_post_by_rubric,
                                                  'minpbr': min_price_by_rubric, 'maxpbr': max_price_by_rubric})
-
 
 class BbByRubricView(SingleObjectMixin, ListView):
     template_name = 'bboard/by_rubric.html'
@@ -62,6 +64,7 @@ def my_posts(request):
 def profile_view(request, pk):
     profile = Profile.objects.get(user_id=pk)
     my_post = Bb.objects.filter(user_id=pk)
+    #comments = Response.objects.filter(user_id=pk)
     context = {'profile': profile, 'my_post': my_post}
 
     return render(request, 'bboard/profile.html', context)
@@ -129,13 +132,13 @@ def update_profile(request):
 
 
 class AddResponse(View):
-    """Отзывы"""
+    """Отклики"""
     def post(self, request, pk):
         form = ResponseForm(request.POST)
         post = Bb.objects.get(id=pk)
         if form.is_valid():
             form = form.save(commit=False)
-            form.name = request.user
+            form.user = request.user
             form.post = post
             form.save()
         return redirect('index')

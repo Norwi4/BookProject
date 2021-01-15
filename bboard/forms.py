@@ -23,7 +23,14 @@ class ProfileForm(ModelForm):
 
 
 class ResponseForm(ModelForm):
-    """Форма отзывов"""
+    """Форма откликов"""
     class Meta:
         model = Response
         fields = ('text', )
+
+
+'''class ReviewsForm(ModelForm):
+    """Форма отзывов"""
+    class Meta:
+        model = Reviews
+        fields = ('text', )'''

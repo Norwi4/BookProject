@@ -14,7 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from .views import index, profile_view, add_post, post_detail, BbEditView, BbDeleteView, BbByRubricView, my_posts, AddResponse, update_profile
+from .views import index, profile_view, add_post, post_detail, BbEditView, BbDeleteView, BbByRubricView, my_posts, \
+    update_profile, AddResponse
 
 urlpatterns = [
     #path('me/', view_profile, name='me'),
@@ -26,6 +27,7 @@ urlpatterns = [
     path('<int:rubric_id>/', BbByRubricView.as_view(), name='by_rubric'),
     path('my_posts/', my_posts, name='my_posts'),
     path('response/<int:pk>/', AddResponse.as_view(), name='add_response'),
+    #path('reviews/<int:pk>/', AddReviews.as_view(), name='add_reviews'),
     path('update_profile/', update_profile, name='update_profile'),
 
     path('', index, name='index')
