@@ -8,6 +8,7 @@ from django.views.generic.base import View
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.views.generic.detail import SingleObjectMixin
+from django.core.paginator import Paginator
 
 from .forms import UserForm, ProfileForm, BbForm, ResponseForm, ReviewsForm
 from .models import Bb, Rubric, Profile, Response, Reviews
@@ -19,10 +20,18 @@ from .models import Bb, Rubric, Profile, Response, Reviews
 def index(request):
     bbs = Bb.objects.all()
     rubrics = Rubric.objects.all()
+
+    paginator = Paginator(bbs, 4)
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
+
+    page = paginator.get_page(page_num)
     count_post_by_rubric = Rubric.objects.annotate(Count('bb'))
     min_price_by_rubric = Rubric.objects.annotate(min=Min('bb__price')) #минимальная цена
     max_price_by_rubric = Rubric.objects.annotate(max=Max('bb__price')) #максимальная цена
-    return render(request, 'bboard/index.html', {'bbs': bbs, 'rubrics': rubrics, 'cpbr': count_post_by_rubric,
+    return render(request, 'bboard/index.html', {'page': page, 'bbs': page.object_list, 'rubrics': rubrics, 'cpbr': count_post_by_rubric,
                                                  'minpbr': min_price_by_rubric, 'maxpbr': max_price_by_rubric})
 
 class BbByRubricView(SingleObjectMixin, ListView):
