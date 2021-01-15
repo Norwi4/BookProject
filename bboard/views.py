@@ -9,8 +9,8 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.views.generic.detail import SingleObjectMixin
 
-from .forms import UserForm, ProfileForm, BbForm, ResponseForm
-from .models import Bb, Rubric, Profile, Response
+from .forms import UserForm, ProfileForm, BbForm, ResponseForm, ReviewsForm
+from .models import Bb, Rubric, Profile, Response, Reviews
 
 
 #from .forms import BbForm, UserForm, ProfileForm, ResponseForm
@@ -64,8 +64,8 @@ def my_posts(request):
 def profile_view(request, pk):
     profile = Profile.objects.get(user_id=pk)
     my_post = Bb.objects.filter(user_id=pk)
-    #comments = Response.objects.filter(user_id=pk)
-    context = {'profile': profile, 'my_post': my_post}
+    comments = Reviews.objects.filter(profile_id=pk)
+    context = {'profile': profile, 'my_post': my_post, 'comments': comments}
 
     return render(request, 'bboard/profile.html', context)
 
@@ -140,5 +140,18 @@ class AddResponse(View):
             form = form.save(commit=False)
             form.user = request.user
             form.post = post
+            form.save()
+        return redirect('index')
+
+
+class AddReviews(View):
+    """Отклики"""
+    def post(self, request, pk):
+        form = ReviewsForm(request.POST)
+        profile = Profile.objects.get(id=pk)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.user = request.user
+            form.profile = profile
             form.save()
         return redirect('index')

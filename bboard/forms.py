@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from .models import Bb, Profile, Response
+from .models import Bb, Profile, Response, Reviews
 
 
 class BbForm(ModelForm):
@@ -29,8 +29,8 @@ class ResponseForm(ModelForm):
         fields = ('text', )
 
 
-'''class ReviewsForm(ModelForm):
+class ReviewsForm(ModelForm):
     """Форма отзывов"""
     class Meta:
         model = Reviews
-        fields = ('text', )'''
+        fields = ('text', )

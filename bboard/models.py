@@ -73,3 +73,15 @@ class Response(models.Model):
         verbose_name_plural = "Отклики"
 
 
+class Reviews(models.Model):
+    """Отзывы"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Пользователь")
+    text = models.TextField(verbose_name="Сообщение", max_length=5000)
+    profile = models.ForeignKey(Profile, verbose_name="Профиль", on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.profile}"
+
+    class Meta:
+        verbose_name = "Отзыв"
+        verbose_name_plural = "Отзывы"

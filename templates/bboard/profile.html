@@ -68,6 +68,38 @@
         {% endif %}
     {% endif %}
 
+    <div>
 
+        {% with comments.count as total_comments %}
+            <h3>Отзывы {{ total_comments }} </h3>
+
+        {% endwith %}
+        {% for comm in comments %}
+            <p>Пользователь: <a href="{% url 'profile_view' comm.user.pk %}">{{ comm.user }}</a></p>
+            <p>Текст: {{ comm.text }}</p>
+            <br>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="contact-single">
+        <h3 class="editContent" style="outline: none; cursor: inherit;">Откликнуться</h3>
+        <form action="{% url 'add_reviews' profile.pk %}" method="post" class="mt-4">
+            {% csrf_token %}
+            <div class="form-group editContent">
+                <label for="contactcomment" class="editContent">
+                    Ваш комментарий *
+                </label>
+                <textarea class="form-control border" rows="5" name="text"
+                          id="contactcomment" required=""></textarea>
+            </div>
+
+            <button type="submit"
+                    class="mt-3 btn btn-success btn-block py-3">
+                Отправить
+            </button>
+        </form>
+    </div>
 
 {% endblock %}

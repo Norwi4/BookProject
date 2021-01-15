@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Bb, Rubric, Profile, Response
+from .models import Bb, Rubric, Profile, Response, Reviews
 from django.contrib import admin
 
 
@@ -26,6 +26,6 @@ class ResponseAdmin(admin.ModelAdmin):
 
 admin.site.register(Rubric)
 #admin.site.register(Bb)
-#admin.site.register(Reviews)
+admin.site.register(Reviews)
 admin.site.register(Profile)
 
